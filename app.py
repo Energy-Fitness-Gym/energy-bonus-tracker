@@ -7,7 +7,7 @@ from utils import EVENT_VALUES  # Make sure utils.py has your EVENT_VALUES dict
 # --- Google Sheets Authentication ---
 # Pull credentials securely from Streamlit's secret manager
 creds_dict = st.secrets["gcp_service_account"]
-creds = Credentials.from_service_account_info(creds_dict)
+creds = Credentials.from_service_account_info(st.secrets)
 gc = gspread.authorize(creds)
 
 # Connect to Google Sheet + tab
