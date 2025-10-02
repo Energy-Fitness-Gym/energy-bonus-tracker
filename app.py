@@ -1,10 +1,13 @@
 import streamlit as st
 import gspread
-from datetime import datetime
-from utils import EVENT_VALUES
+from google.oauth2.service_account import Credentials
 
-# Connect to Google Sheets
-gc = gspread.service_account(filename='.streamlit/energy-bonus-streamlit-app-3703aa0663da.json')
+# Use credentials stored securely in Streamlit secrets
+creds_dict = st.secrets["gcp_service_account"]
+creds = Credentials.from_service_account_info(creds_dict)
+gc = gspread.authorize(creds)
+
+# Connect to Google Sheet
 sh = gc.open("Energy Bonus Tracker")
 worksheet = sh.worksheet("Master")
 
