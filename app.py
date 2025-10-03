@@ -33,7 +33,7 @@ df = pd.DataFrame(data)
 st.title("💰 Energy Bonus Tracker")
 
 # Define the manager code from secrets
-MANAGER_CODE = st.secrets["manager_code"]
+MANAGER_CODE = st.secrets["default"]["manager_code"]
 
 # Role selection
 role = st.selectbox("Who are you?", ["Employee", "Manager"])
