@@ -4,6 +4,8 @@ import pandas as pd
 from google.oauth2.service_account import Credentials
 from utils import EVENT_VALUES
 
+st.write("Available keys:", list(st.secrets.keys()))
+
 # Define the scope for Google Sheets access
 scope = [
     "https://www.googleapis.com/auth/spreadsheets",
