@@ -1,5 +1,6 @@
 import streamlit as st
 import gspread
+import pandas as pd
 from google.oauth2.service_account import Credentials
 from utils import EVENT_VALUES
 
@@ -22,13 +23,38 @@ gc = gspread.authorize(credentials)
 spreadsheet = gc.open("Energy Bonus Tracker")
 worksheet = spreadsheet.worksheet("Master")
 
+# Load all data into a pandas DataFrame
+data = worksheet.get_all_records()
+df = pd.DataFrame(data)
+
 # Display the title
 st.title("💰 Energy Bonus Tracker")
 
-# Example: Get all values from column A
-names = worksheet.col_values(1)
+# Define the manager code from secrets
+MANAGER_CODE = st.secrets["manager_code"]
 
-# Show names in a simple list
-st.subheader("Names in Column A:")
-for name in names:
-    st.write(name)
+# Role selection
+role = st.selectbox("Who are you?", ["Employee", "Manager"])
+
+# Manager role
+if role == "Manager":
+    access_code = st.text_input("Enter manager access code:", type="password")
+    if access_code != MANAGER_CODE:
+        st.warning("Access denied. Please enter the correct code.")
+        st.stop()
+    else:
+        st.subheader("All Submitted Bonuses")
+        st.dataframe(df)
+
+# Employee role
+elif role == "Employee":
+    name = st.text_input("Enter your name").strip().lower()
+    if not name:
+        st.stop()
+    else:
+        user_data = df[df["Name"].str.lower() == name]
+        if user_data.empty:
+            st.warning("No records found for this name.")
+        else:
+            st.subheader(f"Bonuses for {name.title()}")
+            st.dataframe(user_data)
